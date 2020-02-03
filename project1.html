@@ -1,0 +1,179 @@
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Elements Reference - Massively by HTML5 UP</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<a href="index.html" class="logo">Ninh Hoang</a>
+					</header>
+
+				<!-- Nav -->
+					<nav id="nav">
+						<ul class="links">
+							<li class="active"><a href="index.html">Projects</a></li>
+							<li><a href="generic.html">CV</a></li>
+						</ul>
+						<ul class="icons">
+							<li><a href="https://www.linkedin.com/in/ninh-hoang-803472199/" class="icon brands fa-linkedin"><span class="label">Linkedin</span></a></li>
+							<li><a href="https://github.com/Ninh-Hoang" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Post -->
+							<section class="post">
+								<header class="major">
+									<h1>Game Audio Logic with WWISE on Unity3D</h1>
+								</header>
+
+								<!-- Text stuff -->
+									<h2>Introduction</h2>
+									<p>The aim of this audio system is to enable the audio designers and programmers to be able to work together efficiently. To achieve that we use WWISE
+										- an audio middleware for Game Engines to handle audio playback, mixing, procedural generation, sound bank...etc and C# in Unity to handle the logics.
+										The audio designers can work with WWISE which has similar UI to DAW (Digital Audio Workstation) and the programmers can work with coding C#. 
+
+									</p>
+									<hr />
+									<h2>Audio Zone</h2>
+									<div class="image main"><img src="images/zone.jpg" alt="" /></div>
+									<p>Very basic audio zone trigger using a box collider. We use a C# script to set state:</p>
+									<div class="image main"><img src="images/setstate.jpg" alt="" /></div>
+									<p>And then send the wanted state to WWISE(state 'Autum' from sound bank 'Season'): </p>
+									<div class="image main"><img src="images/scriptState.jpg" alt="" /></div>
+									<p>We can also achive a crossfade between audio zone by adding a gradient for the attenuation: </p>
+									<div class="image main"><img src="images/gradientAtten.jpg" alt="" /></div>
+									<hr />
+									<h2>Audio Culling</h2>
+									<div class="image main"><img src="images/enter.jpg" alt="" /></div>
+									<p>By making a sphere collider around the player and keep an array of audio sources inside the sphere, we only need to play a limited number of audio sources inside the array thus achive audio culling 
+										and reduce computation power needed.
+									</p>
+									<div class="image main"><img src="images/sphere2.jpg" alt="" /></div>
+									<p>And then send the wanted state to WWISE(state 'Autum' from sound bank 'Season'): </p>
+									<hr />
+									<h2>Virtual Audio Occlusion</h2>
+									<div class="image main"><img src="images/notSee.jpg" alt="" /></div>
+									<p>We use RayCasting to check if the player and the sound source can see each other. If no, we cut part of the high audio frequency to simulate audio traveling through objects.
+									</p>
+									<div class="image main"><img src="images/occCode.jpg" alt="" /></div>
+									<p>A hi-cut in WWISE: </p>
+									<div class="image main"><img src="images/occYes.jpg" alt="" /></div>
+									<hr />
+									<h2>Custom shape audio zone</h2>
+									<div class="image main"><img src="images/circular.jpg" alt="" /></div>
+									<p>We can made custom shape audio zone by using multiple colliders together into an array. Extra condition is added to handle on enter and on exist events.
+									</p>
+									<div class="image main"><img src="images/listCol.jpg" alt="" /></div>
+									<div class="image main"><img src="images/bigCol.jpg" alt="" /></div>
+									<hr />
+									<h2>Custom Audio Transition and Ambient</h2>
+									<div class="image main"><img src="images/transition.jpg" alt="" /></div>
+									<p>Intro stems is play before the main loop whenever state is changed. We use a seperate audio bus to play ambient audio. This way we can mix ambient and music separately.
+									</p>
+									<div class="image main"><img src="images/bus.jpg" alt="" /></div>
+									<hr />
+									<h2>Vertical Audio Layering</h2>
+									<p>We now proceed to add layers to the audio depending on the state of the game (rain, danger, night...etc)
+									</p>
+									<div class="image main"><img src="images/switch.jpg" alt="" /></div>
+									<p>Constrains are also added to fit the game logics. For example, insect sounds can only be heard during the night.
+									</p>
+									<div class="image main"><img src="images/constrain.jpg" alt="" /></div>
+									<p>Meanwhile a mixer script is created so the programmers can control more complicating logics.
+									</p>
+									<div class="image main"><img src="images/mixer.jpg" alt="" /></div>
+									<p>In the end we have a decently complex audio for the game.
+									</p>
+									<div class="image main"><img src="images/audioSystem.jpg" alt="" /></div>
+									<hr />
+									<h2>Audio for Footstep and Fixed animations</h2>
+									<p>We declare walkable materials in WWISE:
+									</p>
+									<div class="image main"><img src="images/material.jpg" alt="" /></div>
+									<p>Set contrains: 
+									</p>
+									<div class="image main"><img src="images/foot.jpg" alt="" /></div>
+									<p>Raycast straight down from the player to check the material and send it to WWISE:
+									</p>
+									<div class="image main"><img src="images/ray.jpg" alt="" /></div>
+									<p>For audio that always need to trigger mid a certain animation we can create an event on a keyframe directly on that animation and call for WWISE playback. 
+									</p>
+									<div class="image main"><img src="images/frame.jpg" alt="" /></div>
+									<hr />
+									<h2>Audio mixing with side chaining</h2>
+									<p>Siding chaining is a technique of audio mixing where we use an audio signal of a bus to control the gain of others. 
+										For example when we have a gun shot we need to temporaly reduce the gain of sounds such as footstep, ambient...etc. The audio changes are not triggered via and event but directly via
+										an audio bus signal. The setup can be done purely on WWISE by an audio designer and is fairly simple. 
+									</p>
+									<div class="image main"><img src="images/chain.jpg" alt="" /></div>
+									<hr />
+									<h2>Procedural Audio</h2>
+									<p>Procedural audio with WWISE can be achieved simply by the use of Random container. Every time Unity request an audio playback WWISE will randomly take an audio file.
+									</p>
+									<div class="image main"><img src="images/walk.jpg" alt="" /></div>
+									<p>By also applying this method to various other type of sounds while also randomize their audio pitch the sound of the game will almost never repeat itself. 
+										Audio orientation also plays a big part.
+									</p>
+									<hr />
+
+				<!-- Footer -->
+				<footer id="footer">
+					<section class="split contact">
+						<section class="alt">
+							<h3>Address</h3>
+							<p>114 Chapel Road, Flatbush<br />
+							Manukau, Auckland, ZIPCODE: 2016</p>
+						</section>
+						<section>
+							<h3>Phone</h3>
+							<p><a href="#">022 390 6846</a></p>
+						</section>
+						<section>
+							<h3>Email</h3>
+							<p><a href="#">ninhhoangDev@gmail.com</a></p>
+						</section>
+						<section>
+							<h3>Social</h3>
+							<ul class="icons alt">
+								<li><a href="https://www.linkedin.com/in/ninh-hoang-803472199/" class="icon brands alt fa-linkedin"><span class="label">Linkedin</span></a></li>
+								<li><a href="https://github.com/Ninh-Hoang" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
+								<li><a href="https://www.facebook.com/ninh.hoanggia.3?ref=bookmarks" class="icon brands alt fa-facebook-f"><span class="label">Facebook</span></a></li>
+							</ul>
+						</section>
+					</section>
+				</footer>
+
+
+				<!-- Copyright -->
+				<div id="copyright">
+					<ul><li>&copy; Copyright 2020 Ninh Hoang</li><li>Back Ground Illustration: <a href="https://twitter.com/popopopopoopw">hirannko</a></li></ul>
+				</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
