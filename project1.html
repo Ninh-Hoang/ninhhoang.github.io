@@ -45,28 +45,24 @@
 
 								<!-- Text stuff -->
 									<h2>Introduction</h2>
-									<p>The aim of this audio system is to enable the audio designers and programmers to be able to work together efficiently. To achieve that we use WWISE
-										- an audio middleware for Game Engines to handle audio playback, mixing, procedural generation, sound bank...etc and C# in Unity to handle the logics.
-										The audio designers can work with WWISE which has similar UI to DAW (Digital Audio Workstation) and the programmers can work with coding C#. 
-
-									</p>
+									<p>This audio system aims to enable audio designers and programmers to be able to work together efficiently. To achieve that we use WWISE - an audio middleware for Game Engines to handle audio playback, mixing, procedural generation, sound bank...etc and C# in Unity to handle the logic. The audio designers can work with WWISE which has similar UI to DAW (Digital Audio Workstation) and the programmers can work with coding C#.</p>
 									<hr />
 									<h2>Audio Zone</h2>
 									<div class="image main"><img src="images/zone.jpg" alt="" /></div>
 									<p>Very basic audio zone trigger using a box collider. We use a C# script to set state:</p>
 									<div class="image main"><img src="images/setstate.jpg" alt="" /></div>
-									<p>And then send the wanted state to WWISE(state 'Autum' from sound bank 'Season'): </p>
+									<p>And then send the wanted state to WWISE(state 'Autumn' from soundbank 'Season'): </p>
 									<div class="image main"><img src="images/scriptState.jpg" alt="" /></div>
-									<p>We can also achive a crossfade between audio zone by adding a gradient for the attenuation: </p>
+									<p>We can also achieve a crossfade between audio zone by adding a gradient for the attenuation: </p>
 									<div class="image main"><img src="images/gradientAtten.jpg" alt="" /></div>
 									<hr />
 									<h2>Audio Culling</h2>
 									<div class="image main"><img src="images/enter.jpg" alt="" /></div>
-									<p>By making a sphere collider around the player and keep an array of audio sources inside the sphere, we only need to play a limited number of audio sources inside the array thus achive audio culling 
+									<p>By making a sphere collider around the player and keep an array of audio sources inside the sphere, we only need to play a limited number of audio sources inside the array thus achieve  audio culling 
 										and reduce computation power needed.
 									</p>
 									<div class="image main"><img src="images/sphere2.jpg" alt="" /></div>
-									<p>And then send the wanted state to WWISE(state 'Autum' from sound bank 'Season'): </p>
+									<p>And then send the wanted state to WWISE(state 'Autumn' from soundbank 'Season'):</p>
 									<hr />
 									<h2>Virtual Audio Occlusion</h2>
 									<div class="image main"><img src="images/notSee.jpg" alt="" /></div>
@@ -78,14 +74,14 @@
 									<hr />
 									<h2>Custom shape audio zone</h2>
 									<div class="image main"><img src="images/circular.jpg" alt="" /></div>
-									<p>We can made custom shape audio zone by using multiple colliders together into an array. Extra condition is added to handle on enter and on exist events.
+									<p>We can make custom shape audio zone by using multiple colliders together into an array. Extra condition is added to handle on entering and on existing events.
 									</p>
 									<div class="image main"><img src="images/listCol.jpg" alt="" /></div>
 									<div class="image main"><img src="images/bigCol.jpg" alt="" /></div>
 									<hr />
 									<h2>Custom Audio Transition and Ambient</h2>
 									<div class="image main"><img src="images/transition.jpg" alt="" /></div>
-									<p>Intro stems is play before the main loop whenever state is changed. We use a seperate audio bus to play ambient audio. This way we can mix ambient and music separately.
+									<p>Intro stems are played before the main loop whenever the state is changed. We use a separate audio bus to play ambient audio. This way we can mix ambient and music separately.
 									</p>
 									<div class="image main"><img src="images/bus.jpg" alt="" /></div>
 									<hr />
@@ -93,13 +89,13 @@
 									<p>We now proceed to add layers to the audio depending on the state of the game (rain, danger, night...etc)
 									</p>
 									<div class="image main"><img src="images/switch.jpg" alt="" /></div>
-									<p>Constrains are also added to fit the game logics. For example, insect sounds can only be heard during the night.
+									<p>Constraints  are also added to fit the game logics. For example, insect sounds can only be heard during the night.
 									</p>
 									<div class="image main"><img src="images/constrain.jpg" alt="" /></div>
-									<p>Meanwhile a mixer script is created so the programmers can control more complicating logics.
+									<p>Meanwhile, a mixer script is created so the programmers can control more complicated logic.
 									</p>
 									<div class="image main"><img src="images/mixer.jpg" alt="" /></div>
-									<p>In the end we have a decently complex audio for the game.
+									<p>In the end, we have decently complex audio for the game.
 									</p>
 									<div class="image main"><img src="images/audioSystem.jpg" alt="" /></div>
 									<hr />
@@ -107,29 +103,23 @@
 									<p>We declare walkable materials in WWISE:
 									</p>
 									<div class="image main"><img src="images/material.jpg" alt="" /></div>
-									<p>Set contrains: 
+									<p>Set constrains: 
 									</p>
 									<div class="image main"><img src="images/foot.jpg" alt="" /></div>
 									<p>Raycast straight down from the player to check the material and send it to WWISE:
 									</p>
 									<div class="image main"><img src="images/ray.jpg" alt="" /></div>
-									<p>For audio that always need to trigger mid a certain animation we can create an event on a keyframe directly on that animation and call for WWISE playback. 
-									</p>
+									<p>For audio that always needs to trigger mid a certain animation, we can create an event on a keyframe directly on that animation and call for WWISE playback.</p>
 									<div class="image main"><img src="images/frame.jpg" alt="" /></div>
 									<hr />
 									<h2>Audio mixing with side chaining</h2>
-									<p>Siding chaining is a technique of audio mixing where we use an audio signal of a bus to control the gain of others. 
-										For example when we have a gun shot we need to temporaly reduce the gain of sounds such as footstep, ambient...etc. The audio changes are not triggered via and event but directly via
-										an audio bus signal. The setup can be done purely on WWISE by an audio designer and is fairly simple. 
-									</p>
+									<p>Siding chaining is a technique of audio mixing where we use an audio signal of a bus to control the gain of others. For example, when we have a gunshot we need to temporarily reduce the gain of sounds such as footstep, ambient...etc. The audio changes are not triggered via an event but directly via an audio bus signal. The setup can be done purely on WWISE by an audio designer and is fairly simple.</p>
 									<div class="image main"><img src="images/chain.jpg" alt="" /></div>
 									<hr />
 									<h2>Procedural Audio</h2>
-									<p>Procedural audio with WWISE can be achieved simply by the use of Random container. Every time Unity request an audio playback WWISE will randomly take an audio file.
-									</p>
+									<p>Procedural audio with WWISE can be achieved simply by the use of Random container. Every time Unity requests an audio playback WWISE will randomly take an audio file.</p>
 									<div class="image main"><img src="images/walk.jpg" alt="" /></div>
-									<p>By also applying this method to various other type of sounds while also randomize their audio pitch the sound of the game will almost never repeat itself. 
-										Audio orientation also plays a big part.
+									<p>By also applying this method to various other types of sounds while also randomize their audio pitch the sound of the game will rarely repeat itself. Audio orientation also plays a big part.
 									</p>
 									<hr />
 
