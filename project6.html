@@ -1,0 +1,279 @@
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Ninh Hoang</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<a href="index.html" class="logo">Ninh Hoang</a>
+					</header>
+
+				<!-- Nav -->
+					<nav id="nav">
+						<ul class="links">
+							<li class="active"><a href="index.html">Projects</a></li>
+							<li><a href="generic.html">CV</a></li>
+						</ul>
+						<ul class="icons">
+							<li><a href="https://www.linkedin.com/in/ninh-hoang-803472199/" class="icon brands fa-linkedin"><span class="label">Linkedin</span></a></li>
+							<li><a href="https://github.com/Ninh-Hoang" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Post -->
+							<section class="post">
+								<header class="major">
+									<h1>GAMEPLAY ABILITY SYSTEM - OVERRIDE/CUSTOMIZATION FOR VARIOUS ABILITY TYPES</h1>
+								</header>
+								<h2>Introduction</h2>
+									<p>How to make an ability with charge/number of uses? How to make melee combo with GameplayAbility System? How to apply Effect Modifiers in order? ...etc. As I learn Gameplay Ability System (or GAS) and spend time with the Unreal community, I have seen these many questions asked many times. Therefore I have made this mini guide to show you how to override/setup GAS for very specific customizations.</p>
+									<p>I highly recommend pulling the Unreal source code to see exactly how the system works.</p>
+									<hr />
+									<h2>A summary about of Gameplay Ability System:</h2>
+									<p><p/>
+									<p><b>What is Gameplay Ability System:</b></p>
+									<p>Gameplay Ability System or GAS is a framework for building attributes and abilities developed by EPIC GAME. The framework is then used Fornite and since has been a part of the production for many major games, for example recently, Shadow Warrior 3.</p>
+									<p><b>Pros:</b></p>
+									<p>- GAS is multiplayer ready and even have client prediction, rollback for handling competitive gameplay environment. </p>
+									<p>- Once the system is set up, the designer can work on creating with very little help from the programmer. </p>
+									<p>- Is very flexible and highly efficient. Great for complex games with a lot of calculations or theory crafting. </p>
+									<p>-GAS vastly improves the workflow for making AI as the System by itself is already a very powerful state machine.</p>
+									<p>-Very good reusability and will save you a lot of time.</p>
+									<p><b>Cons:</b></p>
+									<p>-Very steep learning curve and there is barely any documentation at all. There are still many useful but hidden features.</p>
+									<p>-To set up the system, you will have to work in C++ entirely(arguably this is actually a good thing). GAS has very little function exposed to Blueprint and thus the programmer will have to write a lot of utilities.</p>
+									<p>-The number of classes and BP will massive and very hard to keep track of. For example, Fornite has more than 3000 BP for GAS.</p>
+									<p></p>
+									<p>This guide will not show you how to do the basic GAS setup, I highly recommend Dan's documetation: <a href="https://github.com/tranek/GASDocumentation" class="icon brands fa-github"><span class="label">GitHub</span></a></p>
+									<p>It is the best example for starting with the framework.</p>
+									<p></p>
+								<h2>ABILITY WITH USE CHARGE</h2>
+								<p></p>
+								<p>This is the type of ability that can be used consecutively before the user is unable to use it anymore and have to wait for cooldown to end for at least one use. When the cooldown end, the ability will be granted one use. The cooldown will then keep reapplying until the maximum number of uses is reached.</p>
+								<p>You will have to subclass GameplayAbility. In your class add a public Blueprint Editable variable representing the max use:</p>
+								<pre><code>
+//Ability that can stack/charge or not, 1 mean no stack
+UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
+int32 AbilityCharge = 1;
+								</code></pre>
+								<p>And an internal protected variable representing current use left:</p>
+								<pre><code>int32 CurrentCharges = 0;
+								</code></pre>
+								<p>By default, when you try to activate an ability GAS will check the cooldown Tag of the ability on the AbilitySystemComponent. If the Tag exists, CheckCooldown() will return false and the ability is unable to be activated. However, we want the function to only return false when CurrentCharge = 0; Therefore, we override it:</p>
+								<pre><code>bool UARTGameplayAbility::CheckCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, OUT FGameplayTagContainer* OptionalRelevantTags /* = nullptr */) const
+{
+	//if the ability is not single use
+	if (AbilityCharge > 1)
+	{
+		const FGameplayTagContainer* CDTags = GetCooldownTags();
+
+		if (CDTags)
+		{
+			if (CurrentCharges == 0)
+			{
+				const FGameplayTag& FailCDTag = UAbilitySystemGlobals::Get().ActivateFailCooldownTag;
+
+				if (OptionalRelevantTags && FailCDTag.IsValid())
+				{
+					OptionalRelevantTags->AddTag(FailCDTag);
+				}
+
+				return false;
+			}
+		}
+		return true;
+	}
+
+	return Super::CheckCooldown(Handle, ActorInfo, OptionalRelevantTags);
+}
+
+							</code></pre>
+							<p>Now we can keep activating this ability as long as the current charge is not 0.
+Next, every time we use the ability we need to decrease the current charge. Very simple CommitExecute override:</p>
+							<pre><code>void UARTGameplayAbility::CommitExecute(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
+{
+	if (CurrentCharges > 0) {
+		CurrentCharges -= 1;
+	}
+	Super::CommitExecute(Handle, ActorInfo, ActivationInfo);
+}
+
+							</code></pre>
+							<p>Why CommitExecute? Why not Apply Cooldown? Because CommitExecute will only call once when ability activated successfully.</p>
+							<p>Make sure to give an initial current use to your character when the ability is given:</p>
+							<pre><code>void UARTGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
+{
+	Super::OnAvatarSet(ActorInfo, Spec);
+
+	if (AbilityCharge > 1)
+	{
+		CurrentCharges = AbilityCharge;
+	}
+}
+</code></pre>
+							<p>An event needs to be called whenever the cooldown tag of the ability is changed so we can increase usable by one when the cooldown gameplay effect runs out a stack. To bind an event to Ability System Component with a Tag, use RegisterGameplayTagEvent inside OnGiveAbility():</p>
+							<pre><code>void UARTGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
+{
+	Super::OnGiveAbility(ActorInfo, Spec);
+
+	//for charged ability
+	const FGameplayTagContainer* CDTags = GetCooldownTags();
+	if (CDTags) {
+		UAbilitySystemComponent* const AbilitySystemComponent = ActorInfo->AbilitySystemComponent.Get();
+		check(AbilitySystemComponent != nullptr);
+		AbilitySystemComponent->RegisterGameplayTagEvent(CDTags->GetByIndex(0), EGameplayTagEventType::AnyCountChange).AddUObject(this, &UARTGameplayAbility::OnCooldownTagEventCallback);
+	}
+}
+</code></pre>
+							<p>And the callback:</p>
+							<pre><code>void UARTGameplayAbility::OnCooldownTagEventCallback(const FGameplayTag CallbackTag, int32 NewCount)
+{
+	if (AbilityCharge > 1)
+	{
+		const FGameplayTagContainer* CDTags = GetCooldownTags();
+		UAbilitySystemComponent* const AbilitySystemComponent = GetAbilitySystemComponentFromActorInfo();
+		FGameplayEffectQuery const Query = FGameplayEffectQuery::MakeQuery_MatchAnyOwningTags(*CDTags);
+		CurrentCharges = AbilityCharge - AbilitySystemComponent->GetAggregatedStackCount(Query);
+	}
+}
+</code></pre>
+							<p>GameplayEffect Query is used for finding the cooldown effect and GetAggregatedStackCount() is used for returning stack.</p>
+							<p>IMPORTANT: You will have to change how the Cooldown GameplayEffect BP work with stack</p>
+							<p>Stacking Type: Aggregate by Target</p>
+							<p>Stack Limit Count: 0</p>
+							<p>Stack Duration Refresh Policy: Never Refresh</p>
+							<p>Stack Expiration Policy: Remove Single Stack and Refresh Duration.</p>
+							<p>The charge/use count ability type is now ready to be used.</p>
+							<p></p>
+							<h2>FILTER TARGET DATA BY TEAM BEHAVIOUR (OR BY ANYTHING ELSE)</h2>
+							<p></p>
+							<p>Typically in game you don't want to deal damage to your allies even when they are inside the range your damaging AOE ability (or heal only allies). Filtering is easy with HitResult, however the main way that GAS send the ability data is via TargetData and thus you have to create a custom TargetData filter. In the Source code, EPIC does saying that they are thinking about making a more complex Filter but for now you will have to subclass FGameplayTargetDataFilter.<p>							<p>Add this two varibles to the struct:</p>
+							<pre><code>UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ExposeOnSpawn = true), Category = Filter)
+AActor* SourceActor;
+
+TEnumAsByte<ETeamAttitude::Type> TeamAttitude;
+</code></pre>
+							<p>SourceActor will be the actor that you want to compare with. Normally it will be the player as you want to find out if the Target is friend or foe to the ingistigator. We create our a function that return true or false depend on the team behaviour behaviour.</p>
+							<pre><code>/** Returns true if the actor passes the filter and will be targeted */
+bool TargetPassesFilter(const AActor* TargetActor) const
+{
+	bool bPassFilter = true;
+
+	if (RequiredActorClass != nullptr) {
+		bPassFilter = RequiredActorClass == TargetActor->GetClass();
+	}
+
+	if (SourceActor == nullptr || !TargetActor)
+	{
+		bPassFilter = false;
+	}
+	else
+	{
+		AARTCharacterBase* SourceCharacter = Cast<AARTCharacterBase>(SourceActor);
+		if (TeamAttitude != (SourceCharacter->GetTeamAttitudeTowards(*TargetActor)))
+		{
+			bPassFilter = false;
+		}
+	}
+
+return bReverseFilter ^ bPassFilter;
+}
+</code></pre>
+							<p>Then override FilterPassesForActor():</p>
+							<pre><code>virtual bool FilterPassesForActor(const AActor* ActorToBeFiltered) const override
+{
+	return TargetPassesFilter(ActorToBeFiltered);
+}
+</code></pre>
+							<p>We have successfully created a TargetDataFilter, however, it will only be useful if you can use it in Blueprint. Create a UBlueprintFunctionLibrary and add a Blueprint Function:</p>
+							<pre><code>UFUNCTION(BlueprintPure, Category = "Ability|TargetData", Meta = (DisplayName = "Make Target Data Filter by Team Attitude"))
+static FGameplayTargetDataFilterHandle MakeTargetDataFilterByTeamAttitude(AActor* FilterActor, AActor* InSourceActor,
+	TEnumAsByte<ETeamAttitude::Type> InTeamAttitude,
+	TEnumAsByte<ETargetDataFilterSelf::Type> InSelfFilter, TSubclassOf<AActor> InRequiredActorClass, bool InReverseFilter);
+</code></pre>
+							<p>We have to create a FilterHandle, initialize it with the new filter and return it.</p>
+							<pre><code>FGameplayTargetDataFilterHandle UARTBlueprintFunctionLibrary::MakeTargetDataFilterByTeamAttitude(AActor* FilterActor,
+	AActor* InSourceActor, TEnumAsByte<ETeamAttitude::Type> InTeamAttitude,
+	TEnumAsByte<ETargetDataFilterSelf::Type> InSelfFilter,
+	TSubclassOf<AActor> InRequiredActorClass, bool InReverseFilter)
+{
+	FARTTargetFilterTeamID Filter;
+	Filter.SourceActor = InSourceActor;
+	Filter.TeamAttitude = InTeamAttitude;
+	Filter.SelfFilter = InSelfFilter;
+	Filter.RequiredActorClass = InRequiredActorClass;
+	Filter.bReverseFilter = InReverseFilter;
+
+	FGameplayTargetDataFilter* NewFilter = new FARTTargetFilterTeamID(Filter);
+	NewFilter->InitializeFilterContext(FilterActor);
+
+	FGameplayTargetDataFilterHandle FilterHandle;
+	FilterHandle.Filter = TSharedPtr<FGameplayTargetDataFilter>(NewFilter);
+	return FilterHandle;
+}
+</code></pre>
+							<p>I recommend creating a Blueprint Function for filtering Array of TargetData as well as sometimes your TargetData is not created by TargetActor but a TargetType for example.</p>
+							<p></p>
+							<p></p>
+							</section>
+				<!-- Footer -->
+				<footer id="footer">
+					<section class="split contact">
+						<section class="alt">
+							<h3>Address</h3>
+							<p>18 Ravenwood, Forrest Hill<br />
+							North Shore, Auckland, ZIPCODE: 0620</p>
+						</section>
+						<section>
+							<h3>Phone</h3>
+							<p><a href="#">022 390 6846</a></p>
+						</section>
+						<section>
+							<h3>Email</h3>
+							<p><a href="#">ninhhoangDev@gmail.com</a></p>
+						</section>
+						<section>
+							<h3>Social</h3>
+							<ul class="icons alt">
+								<li><a href="https://www.linkedin.com/in/ninh-hoang-803472199/" class="icon brands alt fa-linkedin"><span class="label">Linkedin</span></a></li>
+								<li><a href="https://github.com/Ninh-Hoang" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
+								<li><a href="https://www.facebook.com/ninh.hoanggia.3?ref=bookmarks" class="icon brands alt fa-facebook-f"><span class="label">Facebook</span></a></li>
+							</ul>
+						</section>
+					</section>
+				</footer>
+
+
+				<!-- Copyright -->
+				<div id="copyright">
+					<ul><li>&copy; Copyright 2020 Ninh Hoang</li><li>Back Ground Illustration: <a href="https://twitter.com/popopopopoopw">hirannko</a></li></ul>
+				</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
