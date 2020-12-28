@@ -1,0 +1,130 @@
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Ninh Hoang</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<a href="index.html" class="logo">Ninh Hoang</a>
+					</header>
+
+				<!-- Nav -->
+					<nav id="nav">
+						<ul class="links">
+							<li class="active"><a href="index.html">Projects</a></li>
+							<li><a href="generic.html">CV</a></li>
+						</ul>
+						<ul class="icons">
+							<li><a href="https://www.linkedin.com/in/ninh-hoang-803472199/" class="icon brands fa-linkedin"><span class="label">Linkedin</span></a></li>
+							<li><a href="https://github.com/Ninh-Hoang" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Post -->
+							<section class="post">
+								<header class="major">
+									<h1>GAMEPLAY ABILITY SYSTEM MINIGAME - ABILITY DRIVEN ARKANOID</h1>
+								</header>
+								<div class="image main"><img src="images/arkanoid_start_menu_gif.gif" alt="" /></div>
+								<div class="image main"><img src="images/showcasegif.gif" alt="" /></div>
+								<h2>Introduction</h2>
+									<p>This is a very light weight mini game that was made in 4 days with the Gameplay Ability System from Unreal Engine. The game showcases the usage of GAS for ability activation, attribute modification and gameplay effect application.</p>
+									<p>The game at it core is an Arknoid game where player controls the platform for bouncing and preventing the balls from falling off the screen. Ball deals damage to bricks upon collision and player will move to next stage when all brick are destroyed. Game is over when player has no balls left on screen.</p>
+									<p>The fully executable game is here, only 86 MBs:</p>
+									<li><a href="https://drive.google.com/file/d/1rtwFitWJP0Ix172qFK-I5I6SDYpjSaDC/view"><span class="label">Google Drive</span></a></li>
+									<p></p>
+									<p>Source code available on Github:</p>
+									<li><a href="https://github.com/Ninh-Hoang/GAS-Arkanoid"><span class="label">GitHub</span></a></li>
+									<hr />
+									<h2>Usage of Gameplay Ability System:</h2>
+									<p><p/>
+									<p>Player ball attack power, platform movement speed, ball speed are control by attributes. These can be modified with ease via gameplay effects. </p>
+									<img src="images/moveballspeed_attribute.jpg" alt="" />
+									<p>Brick has attributes such as Shield, Health and Armor. We can now have multiple different type of brick from from changing these attribute values</p>
+									<img src="images/enemytype.jpg" alt="" />
+									<p>Execution calculation is used for damage. This allows complex damage calculation formular with different damage type dealing different damage to shield or armor. Energy damage deals extra damage to shield and Kinetic Damage deals extra damage to health that is protected by armor. </p>
+									<img src="images/executaioncal.jpg" alt="" />
+									<p>Gameplay controls are ability driven. Everything other than movement are trigger by ability activation. Ability has their own cooldown and activation restriction with gameplay tags.</p>
+									<p>Launch Ball: Lauch a ball, has cooldown of 5s, will not be activated if there are already 3 balls on the screen.</p>
+									<img src="images/launchballgif.gif" alt="" />
+									<p>Switch Ball Core: switch the type of damage of the ball from Kinetic to Energy and vice versa, no cooldown</p>
+									<img src="images/switchcoregif.gif" alt="" />
+									<p>Ball Implosion: make all balls on the screen explode, dealing AoE damage to the surrounding brick. The damage type is depend on the current damage mode. 5s cooldown. </p>
+									<img src="images/ballimplosiongif.gif" alt="" />
+									<p>Time dialation: Temporary slow down time, cooldown 5s </p>
+									<img src="images/timedialationgif.gif" alt="" />
+									<p>Various pickup are used to enhance gameplay. Pickup up grant gameplay effect to player. Gameplay effects in turn grant new abilities. These abilities are override to be trigger upon given.</p>
+									<img src="images/abilityoverride.jpg" alt="" />
+									<p>Heavy Object: Ball speed slow down bto 20% for 5s</p>
+									<img src="images/heavyobjectgif.gif" alt="" />
+									<p>Defender Mode: Bigger rocket platform for 15s. Montage is played via gameplay ability task.</p>
+									<img src="images/biggergif.gif" alt="" />
+									<p>Unstable Core: All ball collision explode and deal AoE damage. 20s duration.</p>
+									<img src="images/unstablecoregif.gif" alt="" />
+									<p>Zero Sum Discharge: Ball against ball collision deal massive AoE damage in a wide radius. 30s duration.</p>
+									<img src="images/zerosumgif.gif" alt="" />
+									<p>And some other attribute modification pickup such as: move speed increase, ball speed increase...etc</p>
+							<p></p>
+							<p></p>
+							</section>
+				<!-- Footer -->
+				<footer id="footer">
+					<section class="split contact">
+						<section class="alt">
+							<h3>Address</h3>
+							<p>18 Ravenwood, Forrest Hill<br />
+							North Shore, Auckland, ZIPCODE: 0620</p>
+						</section>
+						<section>
+							<h3>Phone</h3>
+							<p><a href="#">022 390 6846</a></p>
+						</section>
+						<section>
+							<h3>Email</h3>
+							<p><a href="#">ninhhoangDev@gmail.com</a></p>
+						</section>
+						<section>
+							<h3>Social</h3>
+							<ul class="icons alt">
+								<li><a href="https://www.linkedin.com/in/ninh-hoang-803472199/" class="icon brands alt fa-linkedin"><span class="label">Linkedin</span></a></li>
+								<li><a href="https://github.com/Ninh-Hoang" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
+								<li><a href="https://www.facebook.com/ninh.hoanggia.3?ref=bookmarks" class="icon brands alt fa-facebook-f"><span class="label">Facebook</span></a></li>
+							</ul>
+						</section>
+					</section>
+				</footer>
+
+
+				<!-- Copyright -->
+				<div id="copyright">
+					<ul><li>&copy; Copyright 2020 Ninh Hoang</li><li>Back Ground Illustration: <a href="https://twitter.com/popopopopoopw">hirannko</a></li></ul>
+				</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
